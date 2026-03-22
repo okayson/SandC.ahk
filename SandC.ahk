@@ -3,60 +3,51 @@
 ;-----
 ;
 ;--------------------------------------------------
+#Requires AutoHotkey v2.0
+
 ;--------------------------------
 ; global variables.
 ;--------------------------------
-global gIsSpaceDown			:= False
-global gBeginTickOfSandC	:= 0
+global gIsSpaceDown         := false
+global gBeginTickOfSandC    := 0
 
 ;--------------------------------
-*Space::
-
-	if ( !isSandCMode() )
-	{
-		beginSandC()
-	}
-	return
-	
-;--------------------------------
-*Space Up::
-	
-	if ( isSandCMode() )
-	{
-		endSandC()
-	}
-	return
-	
-;--------------------------------
-isSandCMode()
-{
-	global gIsSpaceDown
-	return gIsSpaceDown
+*Space:: {
+    if (!isSandCMode()) {
+        beginSandC()
+    }
 }
-;--------------------------------
-beginSandC()
-{
-	global gIsSpaceDown
-	global gBeginTickOfSandC
-	
-	gIsSpaceDown		:= True
-	gBeginTickOfSandC	:= A_TickCount
-	Send {RCtrl Down}
-	Input, inputKey, L1 V, {RCtrl}
-}
-;--------------------------------
-endSandC()
-{
-	global gIsSpaceDown
-	global gBeginTickOfSandC
 
-	gIsSpaceDown := False
-	Send {RCtrl Up}
-	
-	If ((A_TickCount - gBeginTickOfSandC) < 200)
-	{
-		Send {Space}
-	}
-	; Send dummy key to finish the "Input" method.
-	Send {RCtrl}
+;--------------------------------
+*Space Up:: {
+    if (isSandCMode()) {
+        endSandC()
+    }
+}
+
+;--------------------------------
+isSandCMode() {
+    global gIsSpaceDown
+    return gIsSpaceDown
+}
+
+;--------------------------------
+beginSandC() {
+    global gIsSpaceDown, gBeginTickOfSandC
+
+    gIsSpaceDown        := true
+    gBeginTickOfSandC   := A_TickCount
+    Send("{RCtrl Down}")
+}
+
+;--------------------------------
+endSandC() {
+    global gIsSpaceDown, gBeginTickOfSandC
+
+    gIsSpaceDown := false
+    Send("{RCtrl Up}")
+
+    if ((A_TickCount - gBeginTickOfSandC) < 200) {
+        Send("{Space}")
+    }
 }
